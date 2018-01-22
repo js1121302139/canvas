@@ -1,17 +1,15 @@
-var stage = this.stage = new Hilo.Stage({
-    renderType: 'CANVAS',
-    width: 800,
-    height: 800,
-    scaleX: 0.7,
-    scaleY: 0.7,
-    container: 'animContainer'
-});
-var ticker = new Hilo.Ticker();
-
-function INDEX(textureImage, textureData, skeletonData, xy, index) {
-    function init(textureImage, textureData, skeletonData, xy) {
-        // 新建龙骨动画
-        var dragonbonesFactory = this.dragonbonesFactory = new dragonBones.HiloFactory();
+function text(dragonBonesData) {
+    var stage = this.stage = new Hilo.Stage({
+        renderType: 'CANVAS',
+        width: 800,
+        height: 800,
+        scaleX: 0.7,
+        scaleY: 0.7,
+        container: 'animContainer'
+    });
+    // 新建龙骨动画
+    function addDragonBonesAni(textureImage, textureData, skeletonData, xy) {
+        var dragonbonesFactory = new dragonBones.HiloFactory();
         // 添加龙骨动画
         dragonbonesFactory.addTextureAtlas(new dragonBones.TextureAtlas(textureImage, textureData));
         // 添加龙骨的关节信息
@@ -29,24 +27,27 @@ function INDEX(textureImage, textureData, skeletonData, xy, index) {
         }, armature);
         // 将龙骨动画添加到动画时钟里
         dragonBones.WorldClock.clock.add(armature);
+        // 播发动画
         armature.animation.gotoAndPlay(this.armature.animation._animationList[1])
-        // armature.animation.gotoAndStop(this.armature.animation._animationList[1],1)
-
-        stage.xy = xy;
+        return armatureDisplay;
+    }
+    var ticker = new Hilo.Ticker(60);
+    console.log(dragonBonesData)
+    for (var i = 0; i < dragonBonesData.length; i++) {
+        this.armatureDisplay = new addDragonBonesAni(dragonBonesData[i].textureImage, dragonBonesData[i].textureData, dragonBonesData[i].skeletonData, dragonBonesData[i].xy);
+        stage.xy = dragonBonesData[i].xy;
         stage.enableDOMEvent('mousedown', true)
         var _this = this;
         this.armatureDisplay.on('mousedown', function (e) {
-            // console.log(e.eventCurrentTarget.getChildAt())
-            // _this.removeChild(0)
             console.log(stage)
-            console.log(e.eventCurrentTarget.getChildIndex())
+            console.log(e.eventTarget)
         })
+
         stage.addChild(this.armatureDisplay);
-        // stage.removeChildAt()
-        ticker.addTick(stage);
-        ticker.addTick(dragonBones);
-        
     }
-    init(textureImage, textureData, skeletonData, xy);
+
+    // stage.removeChildAt()
+    ticker.addTick(stage);
+    ticker.addTick(dragonBones);
+    ticker.start();
 }
-ticker.start();
