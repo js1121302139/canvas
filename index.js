@@ -27,27 +27,40 @@ function text(dragonBonesData) {
         }, armature);
         // 将龙骨动画添加到动画时钟里
         dragonBones.WorldClock.clock.add(armature);
-        // 播发动画
-        armature.animation.gotoAndPlay(this.armature.animation._animationList[1])
+        armature.animation.gotoAndPlay(this.armature.animation._animationList[1],-1,-1,0)
         return armatureDisplay;
     }
+
     var ticker = new Hilo.Ticker(60);
     console.log(dragonBonesData)
     for (var i = 0; i < dragonBonesData.length; i++) {
         this.armatureDisplay = new addDragonBonesAni(dragonBonesData[i].textureImage, dragonBonesData[i].textureData, dragonBonesData[i].skeletonData, dragonBonesData[i].xy);
+        console.log(this.armatureDisplay)
         stage.xy = dragonBonesData[i].xy;
         stage.enableDOMEvent('mousedown', true)
         var _this = this;
         this.armatureDisplay.on('mousedown', function (e) {
-            console.log(stage)
+            // console.log(stage)
             console.log(e.eventTarget)
         })
 
         stage.addChild(this.armatureDisplay);
+        Hilo.Tween.to(this.armatureDisplay,{
+            x:200*Math.random(),
+            y:500,
+            alpha:1
+        }, {
+            duration:1000,
+            delay:500,
+            ease:Hilo.Ease.Linear.EaseIn,
+            onComplete:function(){
+               console.log('进场完成')
+            }
+        })
     }
-
-    // stage.removeChildAt()
+    ticker.addTick(Hilo.Tween);
     ticker.addTick(stage);
+   
     ticker.addTick(dragonBones);
     ticker.start();
 }
