@@ -1,8 +1,8 @@
-function text(dragonBonesData) {
+function test(dragonBonesData) {
     var stage = this.stage = new Hilo.Stage({
         renderType: 'CANVAS',
-        width: 800,
-        height: 800,
+        width: 1200,
+        height: 1200,
         scaleX: 0.7,
         scaleY: 0.7,
         container: 'animContainer'
@@ -21,6 +21,7 @@ function text(dragonBonesData) {
         // 设定距离边距多少距离
         armatureDisplay.x = xy.x;
         armatureDisplay.y = xy.y;
+        
         // 监听龙骨动画的启动
         armature.addEventListener(dragonBones.AnimationEvent.LOOP_COMPLETE, function (e) {
             // console.log(dragonBones);
@@ -30,27 +31,28 @@ function text(dragonBonesData) {
         armature.animation.gotoAndPlay(this.armature.animation._animationList[1],-1,-1,0)
         return armatureDisplay;
     }
-
+    
     var ticker = new Hilo.Ticker(60);
     console.log(dragonBonesData)
-    for (var i = 0; i < dragonBonesData.length; i++) {
+    for (var i = 0; i < dragonBonesData.length; i++) { 
         this.armatureDisplay = new addDragonBonesAni(dragonBonesData[i].textureImage, dragonBonesData[i].textureData, dragonBonesData[i].skeletonData, dragonBonesData[i].xy);
+        this.armatureDisplay.index = i;
         console.log(this.armatureDisplay)
         stage.xy = dragonBonesData[i].xy;
         stage.enableDOMEvent('mousedown', true)
         var _this = this;
         this.armatureDisplay.on('mousedown', function (e) {
             // console.log(stage)
-            console.log(e.eventTarget)
+             console.log(e.eventTarget.parent.index)    
         })
 
         stage.addChild(this.armatureDisplay);
         Hilo.Tween.to(this.armatureDisplay,{
-            x:200*Math.random(),
-            y:500,
+            x:dragonBonesData[i].joinAni.x,
+            y:dragonBonesData[i].joinAni.y,
             alpha:1
         }, {
-            duration:1000,
+            duration:dragonBonesData[i].joinAni.duration,
             delay:500,
             ease:Hilo.Ease.Linear.EaseIn,
             onComplete:function(){
@@ -64,3 +66,20 @@ function text(dragonBonesData) {
     ticker.addTick(dragonBones);
     ticker.start();
 }
+
+test.prototype.getAudio=function(){
+    console.log('audio')
+    var that = this ;
+    // 获取音频文件
+    var audio = Hilo.WebSound.getAudio({
+        src:'./bgm1.mp3',
+        loop:false,
+        volume:1
+    }).on('load',function(e){
+        console.log(e)
+        
+    }).on('end',function(e){
+        console.log(e)
+      
+    }).play();
+}   
