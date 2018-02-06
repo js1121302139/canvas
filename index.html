@@ -67,40 +67,46 @@
             right: 0px;
         }
 
-        #forkMe {}
+        #forkMe {
+        }
     </style>
 </head>
 
 <body>
-    <h1></h1>
-    <div id='animContainer'></div>
-    <ul id='navContainer'></ul>
-    <script src='./hilo-standalone.js'></script>
-    <script src='./dragonbones.min.js'></script>
-    <!-- <script src='./utils.js'></script> -->
-    <script src="./pp/ske.js"></script>
-    <script src="./pp/tex.js"></script>
-    <script src="./index.js"></script>
-    <script>
-        // var animPosDict = { 
-        //     dragon:[550, 850],
-        //     cocos:[500, 800],
-        //     anim:[600, 500],
-        //     spine:[600, 630]
-        // }
-        // var animList = [];
-        // for(var animName in animPosDict){
-        //     animList.push(animName);
-        // }
+<h1></h1>
+<div id='animContainer'></div>
+<ul id='navContainer'></ul>
+<script src='./hilo-standalone.js'></script>
+<script src='./dragonbones.min.js'></script>
+<!-- <script src='./utils.js'></script> -->
+<script src="./pp/ske.js"></script>
+<script src="./pp/tex.js"></script>
+<script src="./index.js"></script>
+<script>
+    // var animPosDict = {
+    //     dragon:[550, 850],
+    //     cocos:[500, 800],
+    //     anim:[600, 500],
+    //     spine:[600, 630]
+    // }
+    // var animList = [];
+    // for(var animName in animPosDict){
+    //     animList.push(animName);
+    // }
 
-        //  人物出现的坐标点
-        
-        var t =new test([
-            { textureImage: './pp/Ubbie_tex.png', textureData: textureData, skeletonData: skeletonData, xy: { x: 100, y: 500 },joinAni:{x:600,y:500,duration:1000} },
-            { textureImage: './pp/Ubbie_tex.png', textureData: textureData, skeletonData: skeletonData, xy: { x: 500, y: 500} ,joinAni:{x:0,y:500,duration:1000 } }
-        ])
+    //  人物出现的坐标点
 
-    </script>
+    //        var t =new test([
+    //            { textureImage: './pp/Ubbie_tex.png', textureData: textureData, skeletonData: skeletonData, xy: { x: 100, y: 500},joinAni:{x:600,y:500,duration:1000} },
+    //            { textureImage: './pp/Ubbie_tex.png', textureData: textureData, skeletonData: skeletonData, xy: { x: 500, y: 500} ,joinAni:{x:0,y:500,duration:1000 } }
+    //        ])
+
+</script>
+<script src="canvas.js"></script>
+<script>
+    var canvas = new CANVAS({width: 500, height: 500, container: 'animContainer'});
+    canvas.init('', '', '', 'aaa');
+</script>
 </body>
 
 </html>

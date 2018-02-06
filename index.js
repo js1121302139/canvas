@@ -67,8 +67,7 @@ function test(dragonBonesData) {
     ticker.start();
 }
 
-test.prototype.getAudio=function(){
-    console.log('audio')
+test.prototype.getAudio=function( ){
     var that = this ;
     // 获取音频文件
     var audio = Hilo.WebSound.getAudio({
@@ -80,6 +79,5 @@ test.prototype.getAudio=function(){
         
     }).on('end',function(e){
         console.log(e)
-      
     }).play();
 }   
