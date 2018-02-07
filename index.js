@@ -43,7 +43,8 @@ function test(dragonBonesData) {
         var _this = this;
         this.armatureDisplay.on('mousedown', function (e) {
             // console.log(stage)
-             console.log(e.eventTarget.parent.index)    
+            console.log(stage.getChildIndex())
+            // console.log(e.eventTarget.parent.index)    
         })
 
         stage.addChild(this.armatureDisplay);

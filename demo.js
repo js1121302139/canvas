@@ -133,5 +133,3 @@ var DEMO = function(img,tex,ske){
         }).play();
     }
 };
-
-// demo.bindEvent();
