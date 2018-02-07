@@ -41,7 +41,7 @@ CANVAS.prototype.loadImg=function(imageArr,index){
     img.onload = function () {
         console.log(index)
         var bmp = _this.bmp = new Hilo.Bitmap({
-            image: img, rect: loadScene[index].rect, x: loadScene[index].x, y: loadScene[index].y
+            image: img, rect: imageArr[index].rect, x: imageArr[index].x, y: imageArr[index].y
         })//.addChild(_this.stage)
         _this.stage.addChildAt(bmp);
     }
