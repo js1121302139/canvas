@@ -3,7 +3,7 @@
 *
 * */
 
-function  CANVAS(canvasData) {
+function CANVAS(canvasData) {
     this.canvasData = canvasData;
     var stage = this.stage = new Hilo.Stage({
         renderType: 'CANVAS',
@@ -13,8 +13,6 @@ function  CANVAS(canvasData) {
         scaleY: 0.7,
         container: canvasData.container
     });
-    console.log(this)
-    return this;
 }
 /*
 
@@ -24,34 +22,56 @@ function  CANVAS(canvasData) {
 * @param {object} sceneData 场景数据
 *
 * */
-CANVAS.prototype.init=function (bonesData,showXY,joinAni,sceneData) {
+CANVAS.prototype.init = function (bonesData, showXY, joinAni, sceneData) {
+    var ticker = new Hilo.Ticker(20);
+    ticker.addTick(this.stage);
+    ticker.start();
     // 如果场景数据有的话执行加载场景
-    sceneData &&  this.loadScene(sceneData);
-
-  console.log("init");
+    sceneData && this.loadScene(sceneData);
+    console.log("init");
 };
+/*
+    @param {Array}  imageArr
+    @param {Number} index 
+*/ 
+CANVAS.prototype.loadImg=function(imageArr,index){
+    var img = new Image();
+        img.src = imageArr[index].src;
+    var _this = this;
+    img.onload = function () {
+        console.log(index)
+        var bmp = _this.bmp = new Hilo.Bitmap({
+            image: img, rect: loadScene[index].rect, x: loadScene[index].x, y: loadScene[index].y
+        })//.addChild(_this.stage)
+        _this.stage.addChildAt(bmp);
+    }
+}
 // 加载场景
-CANVAS.prototype.loadScene=function (loadScene) {
-    console.log(loadScene)
+CANVAS.prototype.loadScene = function (loadScene) {
+    console.log("loadScene")
+    var _this = this;
+    for (var i = 0; i < loadScene.length; i++) {
+        this.loadImg(loadScene,i);
+    }
     return this;
 }
 
-CANVAS.prototype.playAnimation=function () {
+CANVAS.prototype.playAnimation = function () {
     console.log('playAnimation');
 };
 
-CANVAS.prototype.palyBonesAni=function () {
+CANVAS.prototype.palyBonesAni = function () {
     console.log('palyBonesAni');
 };
 
-CANVAS.prototype.palyAudios=function () {
+CANVAS.prototype.palyAudios = function () {
     console.log('palyAudios');
 };
 
-CANVAS.prototype.chatBubble=function () {
+CANVAS.prototype.chatBubble = function () {
     console.log('chatBubble');
 };
 
-CANVAS.prototype.getNextBonesAni=function () {
+CANVAS.prototype.getNextBonesAni = function () {
     console.log('getNextBonesAni');
 };
