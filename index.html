@@ -67,8 +67,7 @@
             right: 0px;
         }
 
-        #forkMe {
-        }
+        #forkMe {}
     </style>
 </head>
 
@@ -93,9 +92,9 @@
         // for(var animName in animPosDict){
         //     animList.push(animName);
         // }
- 
+
         //  人物出现的坐标点
-        
+
         // var t =new test([
         //     { textureImage: './pp/Ubbie_tex.png', textureData: textureData, skeletonData: skeletonData, xy: { x: 100, y: 500 },joinAni:{x:600,y:500,duration:1000} },
         //     { textureImage: './pp/Ubbie_tex.png', textureData: textureData, skeletonData: skeletonData, xy: { x: 500, y: 500} ,joinAni:{x:0,y:500,duration:1000 } }
@@ -103,16 +102,16 @@
 
     </script>
 
-<h1></h1>
-<div id='animContainer'></div>
-<ul id='navContainer'></ul>
-<script src='./hilo-standalone.js'></script>
-<script src='./dragonbones.min.js'></script>
-<!-- <script src='./utils.js'></script> -->
-<script src="./pp/ske.js"></script>
-<script src="./pp/tex.js"></script>
-<script src="./index.js"></script>
-<script>
+    <h1></h1>
+    <div id='animContainer'></div>
+    <ul id='navContainer'></ul>
+    <script src='./hilo-standalone.js'></script>
+    <script src='./dragonbones.min.js'></script>
+    <!-- <script src='./utils.js'></script> -->
+    <script src="./pp/ske.js"></script>
+    <script src="./pp/tex.js"></script>
+    <script src="./index.js"></script>
+    <script>
     // var animPosDict = {
     //     dragon:[550, 850],
     //     cocos:[500, 800],
@@ -131,13 +130,56 @@
     //            { textureImage: './pp/Ubbie_tex.png', textureData: textureData, skeletonData: skeletonData, xy: { x: 500, y: 500} ,joinAni:{x:0,y:500,duration:1000 } }
     //        ])
 
-</script>
-<script src="canvas.js"></script>
-<script>
-    var a = [{src:'http://pic41.nipic.com/20140519/18505720_094740582159_2.jpg',rect:[0,0,500,500],x:0,y:0}]
-    var canvas = new CANVAS({width: 500, height: 500, container: 'animContainer'});
-    canvas.init('', '', '', a);
-</script>
+    </script>
+    <script src="canvas.js"></script>
+    <script>
+        var a = [
+            {
+                src: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1518020958505&di=7816a4bcaf41e7b41310bc1669e70758&imgtype=0&src=http%3A%2F%2Fa3.topitme.com%2F9%2F03%2F45%2F11290203014c145039o.jpg',
+                rect: [0, 0, 1000, 1000],
+                x: 0,
+                y: 0,
+                index: 0
+
+            },
+            {
+                src: 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=282295477,506499078&fm=27&gp=0.jpg',
+                rect: [0, 0, 500, 200],
+                x: 0,
+                y: 200,
+                index: 1
+
+            },
+            {
+                src: 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1010804810,782812968&fm=27&gp=0.jpg',
+                rect: [0, 0, 500, 100],
+                x: 0,
+                y: 100,
+                index: 2
+
+            }
+        ];
+        var bonseData = [
+            {
+                textureImage: './pp/Ubbie_tex.png',
+                textureData: textureData,
+                skeletonData: skeletonData,
+                postion: [100, 500],
+                joinAni: { x: 600, y: 500, duration: 1000 },
+                index: 99
+            },
+            {
+                textureImage: './pp/Ubbie_tex.png',
+                textureData: textureData,
+                skeletonData: skeletonData,
+                postion: [300, 500],
+                joinAni: { x: 600, y: 500, duration: 1000 },
+                index: 99
+            },
+        ]
+        var canvas = new CANVAS({ width: 1000, height: 1000, container: 'animContainer' });
+        canvas.init(bonseData, a);
+    </script>
 </body>
 
 </html>
