@@ -14,6 +14,7 @@ function CANVAS(canvasData) {
         scaleY: 1,
         container: canvasData.container
     });
+    this.stage.enableDOMEvent('mousedown', true)
 }
 
 /*
@@ -26,7 +27,7 @@ function CANVAS(canvasData) {
 * */
 CANVAS.prototype.init = function (bonesData, sceneData) {
     this.bonseData = bonseData;
-    // sceneData && this.loadScene(sceneData);
+     sceneData && this.loadScene(sceneData);
     var ticker = this.ticker = new Hilo.Ticker(60);
     ticker.addTick(dragonBones);
     ticker.addTick(this.stage);
@@ -41,16 +42,8 @@ this.getAudios({
 
 
     // 如果场景数据有的话执行加载场景
-    sceneData && this.loadScene(sceneData);
-    // this.chatBubble({
-    //     width: 90,
-    //     height: 90,
-    //     x: 5,
-    //     y: 0,
-    //     fontSize: 12,
-    //     maxWidth: 300,
-    //     text: '111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111'
-    // });
+    //sceneData && this.loadScene(sceneData);
+    
 
 
 };
@@ -64,17 +57,16 @@ CANVAS.prototype.loadImg = function (imageArr, index) {
     var _this = this;
     (function (index) {
         img.onload = function () {
-            console.log(index)
             var bmp = _this.bmp = new Hilo.Bitmap({
                 image: img, rect: imageArr[index].rect, x: imageArr[index].x, y: imageArr[index].y
             })
             // 如果没有定义index 则使用图片默认的位置顺序进行排序
             _this.stage.addChildAt(bmp, index);
-
-            if (index >= imageArr.length - 1) {
+            if (index == (imageArr.length - 1)) {
                 _this.getBonseData(_this.bonseData);
             }
         }
+        
     })(index)
 }
 // 加载场景
@@ -82,6 +74,8 @@ CANVAS.prototype.loadScene = function (loadScene) {
     var _this = this;
     for (var i = 0; i < loadScene.length; i++) {
         this.loadImg(loadScene, i);
+        console.log(i);
+        
     }
     return this;
 }
@@ -144,7 +138,7 @@ CANVAS.prototype.chatText = function (textData) {
         x: textData.x,
         y: textData.y
     });
-    this.stage.addChildAt(text, this.stage.getNumChildren())
+    this.stage.addChildAt(text, textData.index)
 }
 /*
 { width: 90, height: 90, x: 5, y: 170,maxWidth:200 fontSize:12, text:'oooooo' }
@@ -171,13 +165,14 @@ CANVAS.prototype.chatBubble = function (postion) {
     });
     g4.lineStyle(5, "#e5e5e5").beginFill("rgba(0,0,0,0.5)").drawRoundRectComplex(0, 0, boxWidth + 10, boxHeight, borderRedius, borderRedius, borderRedius, 0).endFill();
 
-    this.stage.addChild(g4)
+    this.stage.addChildAt(g4,postion.index)
     this.chatText({
         fontSize: postion.fontSize,
         text: postion.text,
         maxWidth: postion.maxWidth,
         width: 99,
         height: 11,
+        index:postion.index+1,
         x: postion.x + 10,
         y: postion.y + 10
     });
@@ -195,14 +190,30 @@ CANVAS.prototype.getNextBonesAni = function () {
 // 播放龙骨动画
 CANVAS.prototype.palyBonesAni = function (bonseData) {
     this.armature.animation.gotoAndPlay("stand", -1, -1, 0);
-
 };
 
 // 获取单个龙骨动画的数据
 CANVAS.prototype.getBonseData = function (bonseDatas) {
+    var _this = this ;
+    console.log(bonseDatas);
     for (var i = 0; i < bonseDatas.length; i++) {
-        this.createBones(bonseDatas[i]);
+        var armatureDisplay = this.createBones(bonseDatas[i]);
+        console.log(armatureDisplay)
+        armatureDisplay.on("mousedown",function(){
+            console.log(_this.stage);
+        })
+        this.stage.addChildAt(armatureDisplay, bonseDatas[i].index);
         this.palyBonesAni();
+        this.chatBubble({
+            width: 90,
+            height: 90,
+            x: 5,
+            y: 0,
+            fontSize: 12,
+            maxWidth: 300,
+            index :99,
+            text: bonseDatas[i].index
+        });
     }
 }
 /*
@@ -229,14 +240,11 @@ CANVAS.prototype.createBones = function (bonseData) {
     armatureDisplay.x = bonseData.postion[0];
     armatureDisplay.y = bonseData.postion[1];
     var index  = bonseData.index;
-
-    this.stage.addChildAt(this.armatureDisplay, index);
-    console.log(this.armatureDisplay);
+    var _this = this;
     // 监听龙骨动画的启动
     armature.addEventListener(dragonBones.AnimationEvent.LOOP_COMPLETE, function (e) {
     }, armature);
     // 将龙骨动画添加到动画时钟里
     dragonBones.WorldClock.clock.add(armature);
-
-
+    return armatureDisplay;
 }
