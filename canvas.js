@@ -16,6 +16,38 @@ function CANVAS(canvasData) {
     });
     this.stage.enableDOMEvent('mousedown', true)
 }
+/*
+{
+    textureImage:'***.png',
+    textureData : "*.json",
+    skeletonData: "*.json",
+    postion:[199,199]
+}
+*/
+// 创建龙骨
+var CREATEBONES = function (bonseData) {
+    // 新建龙骨动画
+    var dragonbonesFactory = this.dragonbonesFactory = new dragonBones.HiloFactory();
+    // 添加龙骨动画
+    dragonbonesFactory.addTextureAtlas(new dragonBones.TextureAtlas(bonseData.textureImage, bonseData.textureData));
+    // 添加龙骨的关节信息
+    dragonbonesFactory.addDragonBonesData(dragonBones.DataParser.parseDragonBonesData(bonseData.skeletonData));
+    // 获取第一个龙骨动画
+    var armature = this.armature = dragonbonesFactory.buildArmature(bonseData.skeletonData.armature[0].name);
+    // 获取龙骨动画的详细信息
+    var armatureDisplay = this.armatureDisplay = armature.getDisplay();
+    // 设定距离边距多少距离
+    armatureDisplay.x = bonseData.postion[0];
+    armatureDisplay.y = bonseData.postion[1];
+    var _this = this;
+    armatureDisplay.index = bonseData.index;
+    // 监听龙骨动画的启动
+    armature.addEventListener(dragonBones.AnimationEvent.LOOP_COMPLETE, function (e) {
+    }, armature);
+    // 将龙骨动画添加到动画时钟里
+    dragonBones.WorldClock.clock.add(armature);
+    return { armatureDisplay: armatureDisplay, armature: armature, playAni: this.palyBonesAni, nextAni: this.getNextBonesAni };
+}
 
 /*
 
@@ -27,25 +59,11 @@ function CANVAS(canvasData) {
 * */
 CANVAS.prototype.init = function (bonesData, sceneData) {
     this.bonseData = bonseData;
-     sceneData && this.loadScene(sceneData);
+    sceneData && this.loadScene(sceneData);
     var ticker = this.ticker = new Hilo.Ticker(60);
     ticker.addTick(dragonBones);
     ticker.addTick(this.stage);
-
     ticker.start();
-this.getAudios({
-    url:'./bgm1.mp3',
-}).play();
-
-
-    // 如果场景数据有的话执行加载场景
-
-
-    // 如果场景数据有的话执行加载场景
-    //sceneData && this.loadScene(sceneData);
-    
-
-
 };
 /*
     @param {Array}  imageArr
@@ -61,12 +79,13 @@ CANVAS.prototype.loadImg = function (imageArr, index) {
                 image: img, rect: imageArr[index].rect, x: imageArr[index].x, y: imageArr[index].y
             })
             // 如果没有定义index 则使用图片默认的位置顺序进行排序
+            console.log(index + "IMG")
             _this.stage.addChildAt(bmp, index);
             if (index == (imageArr.length - 1)) {
                 _this.getBonseData(_this.bonseData);
             }
         }
-        
+
     })(index)
 }
 // 加载场景
@@ -74,8 +93,6 @@ CANVAS.prototype.loadScene = function (loadScene) {
     var _this = this;
     for (var i = 0; i < loadScene.length; i++) {
         this.loadImg(loadScene, i);
-        console.log(i);
-        
     }
     return this;
 }
@@ -83,7 +100,7 @@ CANVAS.prototype.loadScene = function (loadScene) {
 CANVAS.prototype.playAnimation = function () {
 };
 
-// 播放音频
+
 CANVAS.prototype.palyBonesAni = function () {
 };
 /*
@@ -94,24 +111,19 @@ CANVAS.prototype.palyBonesAni = function () {
         end:function(){}
     }
 */
-CANVAS.prototype.getAudios = function (audioFun) {
+CANVAS.prototype.palyAudios = function (bgmUrl) {
     var audio = Hilo.WebSound.getAudio({
-        src: audioFun.url,
+        src: bgmUrl,
         loop: false,
         volume: 1
     }).on('load', function (e) {
-        audioFun.load && audioFun.load(e);
+        // audioFun.load && audioFun.load(e);
 
     }).on('end', function (e) {
-        audioFun.end && audioFun.end(e);
+        // audioFun.end && audioFun.end(e);
 
-    })
-    return audio;
+    }).play();
 }
-
-CANVAS.prototype.palyAudios = function () {
-    this.getAudios.play();
-};
 // 对话框气泡
 /*
 {
@@ -138,6 +150,7 @@ CANVAS.prototype.chatText = function (textData) {
         x: textData.x,
         y: textData.y
     });
+    console.log(textData.index + "text")
     this.stage.addChildAt(text, textData.index)
 }
 /*
@@ -164,46 +177,39 @@ CANVAS.prototype.chatBubble = function (postion) {
         y: postion.y
     });
     g4.lineStyle(5, "#e5e5e5").beginFill("rgba(0,0,0,0.5)").drawRoundRectComplex(0, 0, boxWidth + 10, boxHeight, borderRedius, borderRedius, borderRedius, 0).endFill();
-
-    this.stage.addChildAt(g4,postion.index)
+    console.log(postion.index + "bable")
+    this.stage.addChildAt(g4, postion.index)
     this.chatText({
         fontSize: postion.fontSize,
         text: postion.text,
         maxWidth: postion.maxWidth,
         width: 99,
         height: 11,
-        index:postion.index+1,
+        index: postion.index + 1,
         x: postion.x + 10,
         y: postion.y + 10
     });
-
-};
-// 获取下一个龙骨动画
-CANVAS.prototype.getNextBonesAni = function () {
-    this._index = this._index || 0;
-    var list = this.armature.animation._animationList;
-    return list[(this._index++) % list.length];
-
 };
 
-
-// 播放龙骨动画
-CANVAS.prototype.palyBonesAni = function (bonseData) {
-    this.armature.animation.gotoAndPlay("stand", -1, -1, 0);
-};
+var bonseData1 = null;
 
 // 获取单个龙骨动画的数据
 CANVAS.prototype.getBonseData = function (bonseDatas) {
-    var _this = this ;
-    console.log(bonseDatas);
+    var _this = this;
     for (var i = 0; i < bonseDatas.length; i++) {
-        var armatureDisplay = this.createBones(bonseDatas[i]);
-        console.log(armatureDisplay)
-        armatureDisplay.on("mousedown",function(){
-            console.log(_this.stage);
-        })
-        this.stage.addChildAt(armatureDisplay, bonseDatas[i].index);
-        this.palyBonesAni();
+        (function (i) {
+            var BONSEDATA = new CREATEBONES(bonseDatas[i]);
+            BONSEDATA.armatureDisplay.on("mousedown", function (e) {
+                bonseData1 = e;
+                var bonesIndex = e.eventTarget.parent.index;
+                BONSEDATA.playAni(BONSEDATA.armature)
+                console.log(e);
+                // bonseDatas[i].bgm && _this.palyAudios(bonseDatas[i].bgm);
+            })
+            _this.stage.addChildAt(BONSEDATA.armatureDisplay, bonseDatas[i].index);
+            BONSEDATA.playAni(BONSEDATA.armature);
+        })(i)
+
         this.chatBubble({
             width: 90,
             height: 90,
@@ -211,40 +217,22 @@ CANVAS.prototype.getBonseData = function (bonseDatas) {
             y: 0,
             fontSize: 12,
             maxWidth: 300,
-            index :99,
-            text: bonseDatas[i].index
+            index: 9,
+            text: "你好啊！"
         });
     }
 }
-/*
-{
-    textureImage:'***.png',
-    textureData : "*.json",
-    skeletonData: "*.json",
-    postion:[199,199]
-}
-*/
-// 创建龙骨
-CANVAS.prototype.createBones = function (bonseData) {
-    // 新建龙骨动画
-    var dragonbonesFactory = this.dragonbonesFactory = new dragonBones.HiloFactory();
-    // 添加龙骨动画
-    dragonbonesFactory.addTextureAtlas(new dragonBones.TextureAtlas(bonseData.textureImage, bonseData.textureData));
-    // 添加龙骨的关节信息
-    dragonbonesFactory.addDragonBonesData(dragonBones.DataParser.parseDragonBonesData(bonseData.skeletonData));
-    // 获取第一个龙骨动画
-    var armature = this.armature = dragonbonesFactory.buildArmature(bonseData.skeletonData.armature[0].name);
-    // 获取龙骨动画的详细信息
-    var armatureDisplay = this.armatureDisplay = armature.getDisplay();
-    // 设定距离边距多少距离
-    armatureDisplay.x = bonseData.postion[0];
-    armatureDisplay.y = bonseData.postion[1];
-    var index  = bonseData.index;
-    var _this = this;
-    // 监听龙骨动画的启动
-    armature.addEventListener(dragonBones.AnimationEvent.LOOP_COMPLETE, function (e) {
-    }, armature);
-    // 将龙骨动画添加到动画时钟里
-    dragonBones.WorldClock.clock.add(armature);
-    return armatureDisplay;
-}
+
+
+// 获取下一个龙骨动画
+CREATEBONES.prototype.getNextBonesAni = function (armature) {
+    this._index = this._index || 0;
+    var list = armature.animation._animationList;
+    return list[(this._index++) % list.length];
+
+};
+// 播放龙骨动画
+CREATEBONES.prototype.palyBonesAni = function (armature) {
+    var name = this.nextAni(armature);
+    armature.animation.gotoAndPlay(name, -1, -1, 0);
+};
