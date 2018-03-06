@@ -111,17 +111,17 @@ CANVAS.prototype.palyBonesAni = function () {
         end:function(){}
     }
 */
-CANVAS.prototype.palyAudios = function (bgmUrl) {
+CANVAS.prototype.palyAudios = function (bgmUrl,callBack) {
     var audio = Hilo.WebSound.getAudio({
         src: bgmUrl,
         loop: false,
         volume: 1
     }).on('load', function (e) {
         // audioFun.load && audioFun.load(e);
-
+        console.log(e);
+        callBack(e.target);
     }).on('end', function (e) {
         // audioFun.end && audioFun.end(e);
-
     }).play();
 }
 // 对话框气泡
@@ -202,12 +202,15 @@ CANVAS.prototype.getBonseData = function (bonseDatas) {
             BONSEDATA.armatureDisplay.on("mousedown", function (e) {
                 bonseData1 = e;
                 var bonesIndex = e.eventTarget.parent.index;
-                BONSEDATA.playAni(BONSEDATA.armature)
+                BONSEDATA.playAni(BONSEDATA.armature,BONSEDATA.nextAni(BONSEDATA.armature)=="atc"?1:0)
                 console.log(e);
-                // bonseDatas[i].bgm && _this.palyAudios(bonseDatas[i].bgm);
+                bonseDatas[i].bgm && _this.palyAudios(bonseDatas[i].bgm,function(audiosData){
+                    console.log(audiosData.duration);
+                    console.log(BONSEDATA);
+                });
             })
             _this.stage.addChildAt(BONSEDATA.armatureDisplay, bonseDatas[i].index);
-            BONSEDATA.playAni(BONSEDATA.armature);
+            BONSEDATA.playAni(BONSEDATA.armature,0);
         })(i)
 
         this.chatBubble({
@@ -218,11 +221,10 @@ CANVAS.prototype.getBonseData = function (bonseDatas) {
             fontSize: 12,
             maxWidth: 300,
             index: 9,
-            text: "你好啊！"
+            text: "你好啊！你好啊！你好啊！你好啊！你好啊！你好啊！你好啊！你好啊！你好啊！"
         });
     }
 }
-
 
 // 获取下一个龙骨动画
 CREATEBONES.prototype.getNextBonesAni = function (armature) {
@@ -232,7 +234,7 @@ CREATEBONES.prototype.getNextBonesAni = function (armature) {
 
 };
 // 播放龙骨动画
-CREATEBONES.prototype.palyBonesAni = function (armature) {
+CREATEBONES.prototype.palyBonesAni = function (armature,cycle) {
     var name = this.nextAni(armature);
-    armature.animation.gotoAndPlay(name, -1, -1, 0);
+    armature.animation.gotoAndPlay(name, -1, -1, cycle|| 0);
 };
